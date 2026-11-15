@@ -213,21 +213,24 @@ Operating System: [system and release]</span></pre>
         </div>
       </section>
 
-      <section class="auth-area visible" id="authArea">
+      <section class="auth-area" id="authArea">
         <div class="container">
           <div class="auth-panel">
             <h3 id="authTitle">Welcome</h3>
             <div id="authStatus" class="auth-status hidden" role="status" aria-live="polite"></div>
-            <div id="authFormWrap">
-              <form id="authForm" class="auth-form">
-                <input id="emailInput" type="email" placeholder="Email address" required />
-                <input id="passwordInput" type="password" placeholder="Password" required />
-                <div class="auth-actions">
-                  <button id="signInBtn" class="button" type="submit">Sign in</button>
-                  <button id="signUpBtn" class="button secondary" type="button">Create account</button>
-                  <button id="signOutBtn" class="button secondary hidden" type="button">Sign out</button>
-                </div>
-              </form>
+
+            <form id="authForm" class="auth-form">
+              <input id="emailInput" type="email" placeholder="Email address" required />
+              <input id="passwordInput" type="password" placeholder="Password" required />
+
+              <div class="auth-actions">
+                <button id="signInBtn" class="button" type="submit">Sign in</button>
+                <button id="signUpBtn" class="button secondary" type="button">Create account</button>
+              </div>
+            </form>
+
+            <div class="auth-actions" style="margin-top: 12px;">
+              <button id="signOutBtn" class="button secondary hidden" type="button">Sign out</button>
             </div>
           </div>
         </div>
@@ -351,7 +354,13 @@ Operating System: name and release</pre>
 
     <script type="module">
       import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-      import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+      import {
+        getAuth,
+        createUserWithEmailAndPassword,
+        signInWithEmailAndPassword,
+        signOut,
+        onAuthStateChanged
+      } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
       const firebaseConfig = {
         apiKey: "AIzaSyC2TQFQKp09i-RmIwD-dXliS-ErPlH1Ho4",
@@ -402,7 +411,8 @@ Operating System: name and release</pre>
       }
 
       authToggle.addEventListener("click", () => {
-        authArea.classList.toggle("visible");
+        authArea.classList.add("visible");
+        authArea.scrollIntoView({ behavior: "smooth", block: "start" });
       });
 
       signUpBtn.addEventListener("click", async () => {
@@ -424,6 +434,7 @@ Operating System: name and release</pre>
 
       authForm.addEventListener("submit", async (event) => {
         event.preventDefault();
+
         const email = emailInput.value.trim();
         const password = passwordInput.value.trim();
 
@@ -444,6 +455,8 @@ Operating System: name and release</pre>
         try {
           await signOut(auth);
           showStatus("Signed out successfully.", "success");
+          authArea.classList.remove("visible");
+          authToggle.textContent = "Login";
         } catch (error) {
           showStatus(error.message, "error");
         }
@@ -452,8 +465,10 @@ Operating System: name and release</pre>
       onAuthStateChanged(auth, (user) => {
         if (user) {
           setSignedInUI(user);
+          authArea.classList.add("visible");
         } else {
           setSignedOutUI();
+          authArea.classList.remove("visible");
         }
       });
     </script>
