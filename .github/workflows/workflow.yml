@@ -1,8 +1,5 @@
 name: Hardware Heroes
 
-permissions:
-  contents: read
-
 on:
   push:
     branches: [main]
